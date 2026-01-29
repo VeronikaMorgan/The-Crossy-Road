@@ -1,10 +1,13 @@
 import * as THREE from 'three'
 
-export type RowType = 'cars' | 'trees' | 'trucks'
+export type RowType = 'cars' | 'trees' | 'trucks' | 'train'
 
-export type TreeType = {
+export type TreeType = "pine" | "basic";
+
+export type TreeDataType = {
     tileIndex: number;
     height: number;
+    type: TreeType;
 }
 
 export type VehicleType = {
@@ -12,9 +15,15 @@ export type VehicleType = {
     color: THREE.ColorRepresentation
 }
 
+export type TrainType = {
+    initialTileIndex: number;
+    wagons: number;
+    wagonsColors: THREE.ColorRepresentation[];
+}
+
 export type TreesRowType = {
     type: 'trees';
-    trees: TreeType[]
+    trees: TreeDataType[]
 }
 
 export type VericlesRowType = {
@@ -23,12 +32,18 @@ export type VericlesRowType = {
     vehicles: VehicleType[]
 }
 
-export type CarsRowType = VericlesRowType &{
-    type: 'cars'
+export type VericlesRowDataType = {
+    type: 'cars' | 'trucks';
+    direction: boolean;
+    speed: number;
+    vehicles: VehicleType[]
 }
 
-export type TrucksRowType = VericlesRowType &{
-    type: 'trucks'
+export type TrainRowType = {
+    type: 'train';
+    direction: boolean;
+    speed: number;
+    train: TrainType;
 }
 
 export type VehicleComponentProps = VehicleType &
@@ -36,7 +51,7 @@ export type VehicleComponentProps = VehicleType &
     rowIndex: number;
   };
 
-export type RowDataType = TreesRowType | CarsRowType | TrucksRowType
+export type RowDataType = TreesRowType | VericlesRowDataType | TrainRowType
 
 export type MovementDirection = 'forward' | 'backward' | 'left' | 'right'
 

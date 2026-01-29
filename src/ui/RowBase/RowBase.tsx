@@ -7,7 +7,7 @@ type RowBaseProps = {
 };
 
 const ROW_BASE_COLOR_MAP = {
-  grass: 0xbaf455,
+  grass: 0xbaf32a,
   road: 0x454a59,
 }
 

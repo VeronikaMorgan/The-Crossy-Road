@@ -1,6 +1,6 @@
 import { TILE_SIZE } from "@/_components/constants";
 import type { VehicleComponentProps } from "@/types";
-import { Wheel } from "../Wheel";
+import { Wheel } from "@/ui/Wheel";
 import { useVehicleAnimation } from "@/hooks/useVehicleAnimation";
 import { useRef } from "react";
 import type { Group } from "three";

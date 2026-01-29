@@ -1,0 +1,1 @@
+export { VehiclesRow } from './VehiclesRow';

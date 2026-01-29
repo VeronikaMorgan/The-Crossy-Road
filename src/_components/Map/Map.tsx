@@ -1,4 +1,4 @@
-import { RowBase } from "@/_components/Map/_components/RowBase";
+import { RowBase } from "@/ui/RowBase";
 import { Row } from "./_components/Row";
 import { useMapStore } from "@/stores/mapStore";
 

@@ -1,6 +1,6 @@
 import type { TreesRowType } from "@/types";
-import { RowBase } from "../RowBase";
 import { Tree } from "./_components/Tree";
+import { RowBase } from "@/ui/RowBase";
 
 type TreesProps = {
     rowIndex: number;
@@ -11,7 +11,7 @@ export const Trees = ({ rowIndex, rowData }: TreesProps) => {
   return (
     <RowBase rowIndex={rowIndex} type="grass">
       {rowData.trees.map((tree) => (
-        <Tree key={tree.tileIndex} tileIndex={tree.tileIndex} height={tree.height} />
+        <Tree key={tree.tileIndex} tileIndex={tree.tileIndex} height={tree.height} type={tree.type} />
       ))}
     </RowBase>
   );
