@@ -1,10 +1,15 @@
-import type { RowType, TreeType } from "@/types";
+import type { LevelConfigType, RowType, TreeType } from "@/types";
 
 export const MIN_TILE_INDEX = -10;
 export const MAX_TILE_INDEX = 10;
 export const TILES_PER_ROW = MAX_TILE_INDEX - MIN_TILE_INDEX + 1;
 
 export const TILE_SIZE = 42;
+
+export const INITIAL_LIVES = 3;
+
+export const INVINCIBILITY_DURATION_MS = 5000;
+
 
 export const ROW_TYPES_ARRAY: RowType[] = ["trees", "cars", "trucks", "train"];
 export const TREE_TYPES_ARRAY: TreeType[] = ["pine", "basic"];
@@ -24,7 +29,7 @@ export const MIN_TRUCKS_COUNT = 1;
 
 export const TRAIN_WAGONS_COLORS_ARRAY = [0xf9c74f, 0xf86624, 0x7678ed, 0xef476f];
 export const TRAIN_WAGONS_MIN_COUNT = 4;
-export const TRAIN_WAGONS_MAX_COUNT = 8;
+export const TRAIN_WAGONS_MAX_COUNT = 6;
 
 export const TRAIN_WAGON_WIDTH = 88;
 export const TRAIN_WAGON_SPACING = 95;
@@ -38,7 +43,7 @@ export const ROWS_PATCH_THRESHOLD = 10;
 
 export const TRAIN_SPEEDS = [300];
 
-export const LEVELS_CONFIG = [
+export const LEVELS_CONFIG: LevelConfigType[] = [
   {
     levelId: 1,
     maxCarsCount: 3,

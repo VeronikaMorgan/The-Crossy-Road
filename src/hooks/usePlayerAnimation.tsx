@@ -1,11 +1,12 @@
- import { TILE_SIZE } from "@/_components/constants";
+import { ROWS_PATCH_THRESHOLD, TILE_SIZE } from "@/_components/constants";
+import { useGameStore } from "@/stores/gameStore";
+import { useMapStore } from "@/stores/mapStore";
 import { usePlayerStore } from "@/stores/playerStore";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import type { Group } from "three";
 
 const STEP_DURATION = 0.2;
-
 
 const SetPosition = (player: Group, progress: number, state: { currentTile: number; currentRow: number; movements: string[] }) => {
     const startXPosition = state.currentTile * TILE_SIZE;
@@ -82,7 +83,13 @@ export const usePlayerAnimation = ({
 
      if(progress === 1) {
         stepCompleted();
-      movementClock.stop();
+        const { currentRow } = usePlayerStore.getState();
+        useGameStore.getState().setScore(currentRow);
+        const rowsLength = useMapStore.getState().rows.length;
+        if (currentRow === rowsLength - ROWS_PATCH_THRESHOLD) {
+          useMapStore.getState().setRows();
+        }
+        movementClock.stop();
      }
   });
 };

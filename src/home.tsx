@@ -6,6 +6,7 @@ import { Score } from "./_components/Score";
 import { ResultModal } from "./_components/ResultModal/ResultModal";
 import { useGameStore } from "./stores/gameStore";
 import { useEffect, useState } from "react";
+import { Lives } from "./_components/Lives";
 
 function Home() {
   const [openResultModal, setOpenResultModal] = useState(false);
@@ -25,6 +26,7 @@ function Home() {
       </Scene>
       <Controls />
       <Score />
+      <Lives />
       <ResultModal open={openResultModal} onOpenChange={setOpenResultModal} />
     </>
   );

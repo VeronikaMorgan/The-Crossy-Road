@@ -55,4 +55,23 @@ export type RowDataType = TreesRowType | VericlesRowDataType | TrainRowType
 
 export type MovementDirection = 'forward' | 'backward' | 'left' | 'right'
 
+export type MoveHistoryEntry = {
+  rowIndex: number;
+  tileIndex: number;
+  direction?: MovementDirection;
+};
+
 export type Direction = boolean;
+
+export type LevelConfigType = {
+    levelId: number;
+    maxCarsCount: number;
+    maxTrucksCount: number;
+    maxRoadsRows: number;
+    maxTrainRows: number;
+    trainWindowSize: number;
+    maxTrainsPerWindow: number;
+    carSpeeds: number[];
+    truckSpeeds: number[];
+    trainSpeeds: number[];
+};

@@ -1,7 +1,6 @@
 import {
   CARS,
   CAR_COLORS_ARRAY,
-  LEVELS_CONFIG,
   MAX_TILE_INDEX,
   MAX_TREES_COUNT,
   MIN_CARS_COUNT,
@@ -24,11 +23,10 @@ import {
   TRUCK_COLORS_ARRAY,
   TRUCKS,
 } from "@/_components/constants";
-import type { Direction, RowDataType, RowType, TreeType } from "@/types";
+import type { Direction, LevelConfigType, RowDataType, RowType, TreeType } from "@/types";
 import * as THREE from "three";
 import { getRandomArrayElement } from "./getRandomArrayElement";
 
-type LevelConfig = (typeof LEVELS_CONFIG)[number];
 
 type RowConstraints = {
   consecutiveVehicles: number;
@@ -40,7 +38,7 @@ const getTrainCountInWindow = (recent: RowType[]) =>
   recent.filter((t) => t === TRAIN).length;
 
 const getAvailableTypes = (
-  levelConfig: LevelConfig,
+  levelConfig: LevelConfigType,
   constraints: RowConstraints,
 ): RowType[] => {
   const { consecutiveVehicles, consecutiveTrains, recentTypes } = constraints;
@@ -86,7 +84,7 @@ const updateConstraintsAfterRow = (
 
 export const generateData = (
   numberOfRows: number,
-  levelConfig: LevelConfig,
+  levelConfig: LevelConfigType,
 ) => {
   const rows: RowDataType[] = [];
   const constraints: RowConstraints = {
@@ -126,7 +124,7 @@ const generateTreesRow = () => {
   };
 };
 
-const generateCarsRow = (levelConfig: LevelConfig) => {
+const generateCarsRow = (levelConfig: LevelConfigType) => {
   const carsCount = THREE.MathUtils.randInt(
     MIN_CARS_COUNT,
     levelConfig.maxCarsCount,
@@ -163,7 +161,7 @@ export const getTrainLength = (wagonsCount: number) => {
   return engineX + TRAIN_ENGINE_WIDTH / 2;
 };
 
-const generateTrainRow = (levelConfig: LevelConfig) => {
+const generateTrainRow = (levelConfig: LevelConfigType) => {
   const wagonsCount = THREE.MathUtils.randInt(
     TRAIN_WAGONS_MIN_COUNT,
     TRAIN_WAGONS_MAX_COUNT,
@@ -189,7 +187,7 @@ const generateTrainRow = (levelConfig: LevelConfig) => {
   return { type: TRAIN, direction, speed, train };
 };
 
-const generateTrucksRow = (levelConfig: LevelConfig) => {
+const generateTrucksRow = (levelConfig: LevelConfigType) => {
   const trucksCount = THREE.MathUtils.randInt(
     MIN_TRUCKS_COUNT,
     levelConfig.maxTrucksCount,
@@ -220,7 +218,7 @@ const generateTrucksRow = (levelConfig: LevelConfig) => {
 };
 
 const generateRow = (
-  levelConfig: LevelConfig,
+  levelConfig: LevelConfigType,
   availableTypes: RowType[],
 ): RowDataType => {
   const type = getRandomArrayElement<RowType>(availableTypes);

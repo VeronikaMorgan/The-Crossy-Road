@@ -1,19 +1,20 @@
-import type { MovementDirection } from "@/types";
+import type { MovementDirection, MoveHistoryEntry } from "@/types";
 import { endsUpInValidPosition } from "@/utils/endsUpInValidPosition";
-import { useMapStore } from "./mapStore";
-import { ROWS_PATCH_THRESHOLD } from "@/_components/constants";
-import { useGameStore } from "./gameStore";
 import * as THREE from "three";
 import { create } from "zustand";
+
+const INITIAL_HISTORY: MoveHistoryEntry[] = [{ rowIndex: 0, tileIndex: 0 }];
 
 interface PlayerStore {
   currentRow: number;
   currentTile: number;
   movements: MovementDirection[];
+  moveHistory: MoveHistoryEntry[];
   ref: THREE.Object3D | null;
   queueMovement: (direction: MovementDirection) => void;
   stepCompleted: () => void;
   setPlayerRef: (ref: THREE.Object3D) => void;
+  setPosition: (rowIndex: number, tileIndex?: number) => void;
   reset: () => void;
 }
 
@@ -21,6 +22,7 @@ export const usePlayerStore = create<PlayerStore>((set, get) => ({
   currentRow: 0,
   currentTile: 0,
   movements: [],
+  moveHistory: INITIAL_HISTORY,
   ref: null,
   queueMovement: (direction: MovementDirection) => {
     const state = get();
@@ -52,17 +54,28 @@ export const usePlayerStore = create<PlayerStore>((set, get) => ({
       newTile += 1;
     }
 
-    set({ currentRow: newRow, currentTile: newTile, movements: newMovements });
-
-    if (newRow === useMapStore.getState().rows.length - ROWS_PATCH_THRESHOLD) {
-      useMapStore.getState().setRows();
-    }
-    useGameStore.getState().setScore(newRow);
+    set({
+      currentRow: newRow,
+      currentTile: newTile,
+      movements: newMovements,
+      moveHistory: [
+        ...get().moveHistory,
+        { rowIndex: newRow, tileIndex: newTile, direction },
+      ],
+    });
   },
   setPlayerRef: (ref: THREE.Object3D) => {
     set({ ref });
   },
+  setPosition: (rowIndex: number, tileIndex = 0) => {
+    set({
+      currentRow: rowIndex,
+      currentTile: tileIndex,
+      movements: [],
+      moveHistory: [{ rowIndex, tileIndex }],
+    });
+  },
   reset: () => {
-    set({ currentRow: 0, currentTile: 0, movements: [] });
+    set({ currentRow: 0, currentTile: 0, movements: [], moveHistory: INITIAL_HISTORY });
   },
 }));
