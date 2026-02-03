@@ -1,6 +1,8 @@
 import {
   CARS,
   CAR_COLORS_ARRAY,
+  ITEM_SPAWN_INTERVAL,
+  ITEM_TYPES_ARRAY,
   MAX_TILE_INDEX,
   MAX_TREES_COUNT,
   MIN_CARS_COUNT,
@@ -23,7 +25,7 @@ import {
   TRUCK_COLORS_ARRAY,
   TRUCKS,
 } from "@/_components/constants";
-import type { Direction, LevelConfigType, RowDataType, RowType, TreeType } from "@/types";
+import type { Direction, ItemDataType, LevelConfigType, RowDataType, RowType, TreesRowType, TreeType } from "@/types";
 import * as THREE from "three";
 import { getRandomArrayElement } from "./getRandomArrayElement";
 
@@ -94,15 +96,19 @@ export const generateData = (
   };
 
   for (let i = 0; i < numberOfRows; i++) {
-    const available = getAvailableTypes(levelConfig, constraints);
-    const row = generateRow(levelConfig, available);
+    const baseAvailable = getAvailableTypes(levelConfig, constraints);
+    const shouldAddItem = (i + 1) % ITEM_SPAWN_INTERVAL === 0;
+    const available = shouldAddItem && baseAvailable.includes(TREES)
+      ? [TREES]
+      : baseAvailable;
+    const row = generateRow(levelConfig, available, shouldAddItem);
     updateConstraintsAfterRow(constraints, row.type, levelConfig.trainWindowSize);
     rows.push(row);
   }
   return rows;
 };
 
-const generateTreesRow = () => {
+const generateTreesRow = (addItem: boolean): TreesRowType => {
   const treesCount = THREE.MathUtils.randInt(MIN_TREES_COUNT, MAX_TREES_COUNT);
   const occupiedTiles = new Set<number>();
   const trees = Array.from({ length: treesCount }, () => {
@@ -118,10 +124,26 @@ const generateTreesRow = () => {
     };
   });
 
-  return {
+  const result: { type: "trees"; trees: typeof trees; item?: ItemDataType } = {
     type: TREES,
     trees,
   };
+
+  if (addItem) {
+    const freeTiles: number[] = [];
+    for (let t = MIN_TILE_INDEX; t <= MAX_TILE_INDEX; t++) {
+      if (!occupiedTiles.has(t)) freeTiles.push(t);
+    }
+    if (freeTiles.length > 0) {
+      const tileIndex = getRandomArrayElement(freeTiles);
+      result.item = {
+        type: getRandomArrayElement(ITEM_TYPES_ARRAY),
+        tileIndex,
+      };
+    }
+  }
+
+  return result;
 };
 
 const generateCarsRow = (levelConfig: LevelConfigType) => {
@@ -220,11 +242,12 @@ const generateTrucksRow = (levelConfig: LevelConfigType) => {
 const generateRow = (
   levelConfig: LevelConfigType,
   availableTypes: RowType[],
+  addItem: boolean,
 ): RowDataType => {
   const type = getRandomArrayElement<RowType>(availableTypes);
   switch (type) {
     case TREES:
-      return generateTreesRow();
+      return generateTreesRow(addItem);
     case CARS:
       return generateCarsRow(levelConfig);
     case TRUCKS:

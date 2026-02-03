@@ -1,6 +1,31 @@
 @import "tailwindcss";
 
 
+@theme {
+  --color-yellow: #ffb703;
+  --color-green: #72b01d;
+  --color-blue: #3a86ff;
+  --color-quaternary: #000000;
+  --color-quinary: #000000;
+  --color-senary: #000000;
+  --color-septenary: #000000;
+}
+
+
+@keyframes border-draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.animate-border-draw {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: border-draw 1s linear infinite;
+}
 
 @layer base {
   html {

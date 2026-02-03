@@ -1,5 +1,6 @@
 import { TILE_SIZE } from "@/_components/constants";
 import { useGameStore } from "@/stores/gameStore";
+import { useInventoryStore } from "@/stores/inventoryStore";
 import { useMapStore } from "@/stores/mapStore";
 import { usePlayerStore } from "@/stores/playerStore";
 import { getRespawnTreesPosition } from "@/utils/getRespawnTreesPosition";
@@ -17,6 +18,7 @@ export const useInterfereVehicle = ({
   const endGame = useGameStore((state) => state.setEndGame);
   const gameStatus = useGameStore((state) => state.status);
   const currentRow = usePlayerStore((state) => state.currentRow);
+  const jumpInProgress = usePlayerStore((state) => state.jumpInProgress);
   const playerRef = usePlayerStore((state) => state.ref);
   const setPosition = usePlayerStore((state) => state.setPosition);
   const decrementLives = useGameStore((state) => state.decrementLives);
@@ -44,6 +46,14 @@ export const useInterfereVehicle = ({
 
       if (isIntersecting && !wasIntersectingRef.current) {
         wasIntersectingRef.current = true;
+        const hasShield = useInventoryStore.getState().hasShield();
+        const hasLightning = useInventoryStore.getState().hasLightning();
+        // Щит защищает всегда. Молния — только во время прыжка (jumpInProgress).
+        const protectedByShield = hasShield;
+        const protectedByJump = hasLightning && jumpInProgress !== null;
+        if (protectedByShield || protectedByJump) {
+          return;
+        }
         decrementLives();
         if (getLives() === 0) {
           endGame();

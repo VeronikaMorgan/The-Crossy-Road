@@ -10,6 +10,13 @@ export type TreeDataType = {
     type: TreeType;
 }
 
+export type ItemType = 'shield' | 'clock' | 'lightning'
+
+export type ItemDataType = {
+    type: ItemType;
+    tileIndex: number;
+}
+
 export type VehicleType = {
     initialTileIndex: number
     color: THREE.ColorRepresentation
@@ -23,7 +30,8 @@ export type TrainType = {
 
 export type TreesRowType = {
     type: 'trees';
-    trees: TreeDataType[]
+    trees: TreeDataType[];
+    item?: ItemDataType;
 }
 
 export type VericlesRowType = {

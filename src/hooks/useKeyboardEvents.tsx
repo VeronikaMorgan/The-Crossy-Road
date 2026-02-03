@@ -3,6 +3,7 @@ import { useEffect } from "react";
 
 export const useKeyboardEvents = () => {
     const queueMovement = usePlayerStore((state) => state.queueMovement);
+    const jumpToNextTrees = usePlayerStore((state) => state.jumpToNextTrees);
     
     useEffect(() => {
         const handleKeyDown = (event: KeyboardEvent) => {
@@ -19,11 +20,15 @@ export const useKeyboardEvents = () => {
                 case "ArrowRight":
                     queueMovement("right");
                     break;
+                case " ":
+                    event.preventDefault();
+                    jumpToNextTrees();
+                    break;
             }
         }
         window.addEventListener("keydown", handleKeyDown);
         return () => {
             window.removeEventListener("keydown", handleKeyDown);
         }
-    }, [queueMovement]);
+    }, [queueMovement, jumpToNextTrees]);
 }

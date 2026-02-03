@@ -6,6 +6,7 @@ import { usePlayerAnimation } from "@/hooks/usePlayerAnimation";
 import { useThree } from "@react-three/fiber";
 import { DirectionalLight } from "../DirectionalLight";
 import { useGameStore } from "@/stores/gameStore";
+import { useInventoryStore } from "@/stores/inventoryStore";
 import { usePlayerStore } from "@/stores/playerStore";
 
 export const Player = () => {
@@ -15,6 +16,10 @@ export const Player = () => {
   const setPlayerRef = usePlayerStore((state) => state.setPlayerRef);
   const lastRespawnAt = useGameStore((state) => state.lastRespawnAt);
   const tickRespawnExpiry = useGameStore((state) => state.tickRespawnExpiry);
+  const hasShield = useInventoryStore((state) => {
+    const now = Date.now();
+    return state.activeEffects.some((e) => e.type === "shield" && e.expiresAt > now);
+  });
   usePlayerAnimation({ ref: playerRef });
 
   useFrame(() => {
@@ -29,7 +34,7 @@ export const Player = () => {
     setPlayerRef(playerRef.current);
   }, [camera, setPlayerRef]);
 
-  const showBubble = lastRespawnAt !== null;
+  const showBubble = lastRespawnAt !== null || hasShield;
 
   return (
     <Bounds fit clip observe margin={10}>

@@ -1,20 +1,36 @@
+import { ROWS_PATCH_THRESHOLD, TREES } from "@/_components/constants";
+import { useGameStore } from "@/stores/gameStore";
+import { useInventoryStore } from "@/stores/inventoryStore";
+import { useMapStore } from "@/stores/mapStore";
 import type { MovementDirection, MoveHistoryEntry } from "@/types";
 import { endsUpInValidPosition } from "@/utils/endsUpInValidPosition";
-import * as THREE from "three";
+import { getNearestFreeTileOnTreesRow } from "@/utils/getNearestFreeTileOnTreesRow";
+import type { Object3D } from "three";
 import { create } from "zustand";
 
 const INITIAL_HISTORY: MoveHistoryEntry[] = [{ rowIndex: 0, tileIndex: 0 }];
+
+type JumpInProgress = {
+  targetRow: number;
+  targetTile: number;
+  startRow: number;
+  startTile: number;
+  startTime: number;
+};
 
 interface PlayerStore {
   currentRow: number;
   currentTile: number;
   movements: MovementDirection[];
   moveHistory: MoveHistoryEntry[];
-  ref: THREE.Object3D | null;
+  ref: Object3D | null;
+  jumpInProgress: JumpInProgress | null;
   queueMovement: (direction: MovementDirection) => void;
   stepCompleted: () => void;
-  setPlayerRef: (ref: THREE.Object3D) => void;
+  setPlayerRef: (ref: Object3D) => void;
   setPosition: (rowIndex: number, tileIndex?: number) => void;
+  jumpToNextTrees: () => void;
+  completeJump: () => void;
   reset: () => void;
 }
 
@@ -24,8 +40,10 @@ export const usePlayerStore = create<PlayerStore>((set, get) => ({
   movements: [],
   moveHistory: INITIAL_HISTORY,
   ref: null,
+  jumpInProgress: null,
   queueMovement: (direction: MovementDirection) => {
     const state = get();
+    if (state.jumpInProgress) return;
     const isFinalPositionValid = endsUpInValidPosition(
       { rowIndex: state.currentRow, tileIndex: state.currentTile },
       [...state.movements, direction],
@@ -64,7 +82,7 @@ export const usePlayerStore = create<PlayerStore>((set, get) => ({
       ],
     });
   },
-  setPlayerRef: (ref: THREE.Object3D) => {
+  setPlayerRef: (ref: Object3D) => {
     set({ ref });
   },
   setPosition: (rowIndex: number, tileIndex = 0) => {
@@ -75,7 +93,77 @@ export const usePlayerStore = create<PlayerStore>((set, get) => ({
       moveHistory: [{ rowIndex, tileIndex }],
     });
   },
+  jumpToNextTrees: () => {
+    const hasLightning = useInventoryStore.getState().hasLightning();
+    if (!hasLightning) return;
+
+    const state = get();
+    if (state.jumpInProgress) return;
+
+    const rows = useMapStore.getState().rows;
+    if (!state.ref) return;
+
+    let targetRow = -1;
+    for (let i = state.currentRow; i < rows.length; i++) {
+      if (rows[i]?.type === TREES) {
+        targetRow = i + 1;
+        break;
+      }
+    }
+
+    if (targetRow === -1 || targetRow <= state.currentRow) return;
+
+    const rowData = rows[targetRow - 1];
+    const targetTile =
+      rowData?.type === TREES
+        ? getNearestFreeTileOnTreesRow(rowData, state.currentTile)
+        : state.currentTile;
+
+    set({
+      jumpInProgress: {
+        targetRow,
+        targetTile,
+        startRow: state.currentRow,
+        startTile: state.currentTile,
+        startTime: performance.now(),
+      },
+    });
+  },
+  completeJump: () => {
+    const state = get();
+    const jump = state.jumpInProgress;
+    if (!jump) return;
+
+    const { targetRow, targetTile } = jump;
+    set({
+      currentRow: targetRow,
+      currentTile: targetTile,
+      movements: [],
+      moveHistory: [
+        ...state.moveHistory,
+        { rowIndex: targetRow, tileIndex: targetTile },
+      ],
+      jumpInProgress: null,
+    });
+    useGameStore.getState().setScore(targetRow);
+
+    let iterations = 0;
+    const maxIterations = 10;
+    while (
+      useMapStore.getState().rows.length - ROWS_PATCH_THRESHOLD <= targetRow &&
+      iterations < maxIterations
+    ) {
+      useMapStore.getState().setRows();
+      iterations += 1;
+    }
+  },
   reset: () => {
-    set({ currentRow: 0, currentTile: 0, movements: [], moveHistory: INITIAL_HISTORY });
+    set({
+      currentRow: 0,
+      currentTile: 0,
+      movements: [],
+      moveHistory: INITIAL_HISTORY,
+      jumpInProgress: null,
+    });
   },
 }));

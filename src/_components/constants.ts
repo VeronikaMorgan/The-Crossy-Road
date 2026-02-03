@@ -1,4 +1,4 @@
-import type { LevelConfigType, RowType, TreeType } from "@/types";
+import type { ItemType, LevelConfigType, RowType, TreeType } from "@/types";
 
 export const MIN_TILE_INDEX = -10;
 export const MAX_TILE_INDEX = 10;
@@ -10,6 +10,9 @@ export const INITIAL_LIVES = 3;
 
 export const INVINCIBILITY_DURATION_MS = 5000;
 
+export const ITEM_DURATION_MS = 10000;
+export const ITEM_SPAWN_INTERVAL = 20;
+export const ITEM_TYPES_ARRAY: ItemType[] = ['shield', 'clock', 'lightning'];
 
 export const ROW_TYPES_ARRAY: RowType[] = ["trees", "cars", "trucks", "train"];
 export const TREE_TYPES_ARRAY: TreeType[] = ["pine", "basic"];

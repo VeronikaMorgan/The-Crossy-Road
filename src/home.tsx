@@ -1,12 +1,13 @@
 import { Scene } from "./_components/Scene";
-import { Player } from "./_components/Player/Player";
-import { Map } from "./_components/Map/Map";
 import { Controls } from "./_components/Controls";
-import { Score } from "./_components/Score";
+import { Inventory } from "./_components/Inventory";
+import { Lives } from "./_components/Lives";
+import { Map } from "./_components/Map/Map";
+import { Player } from "./_components/Player/Player";
 import { ResultModal } from "./_components/ResultModal/ResultModal";
+import { Score } from "./_components/Score";
 import { useGameStore } from "./stores/gameStore";
 import { useEffect, useState } from "react";
-import { Lives } from "./_components/Lives";
 
 function Home() {
   const [openResultModal, setOpenResultModal] = useState(false);
@@ -25,8 +26,9 @@ function Home() {
         <Map />
       </Scene>
       <Controls />
-      <Score />
+      <Inventory />
       <Lives />
+      <Score />
       <ResultModal open={openResultModal} onOpenChange={setOpenResultModal} />
     </>
   );

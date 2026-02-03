@@ -1,6 +1,7 @@
 import { useGameStore } from "@/stores/gameStore";
-import { usePlayerStore } from "@/stores/playerStore";
+import { useInventoryStore } from "@/stores/inventoryStore";
 import { useMapStore } from "@/stores/mapStore";
+import { usePlayerStore } from "@/stores/playerStore";
 import {
   Dialog,
   DialogContent,
@@ -10,13 +11,15 @@ import {
 
 export const ResultModal = ({ open, onOpenChange }: { open: boolean; onOpenChange: (open: boolean) => void }) => {
   const { score, reset: resetGame } = useGameStore();
-  const resetPlayer = usePlayerStore((state) => state.reset);
+  const resetInventory = useInventoryStore((state) => state.reset);
   const resetMap = useMapStore((state) => state.reset);
+  const resetPlayer = usePlayerStore((state) => state.reset);
 
   const handleRestart = () => {
     resetGame();
-    resetPlayer();
+    resetInventory();
     resetMap();
+    resetPlayer();
     onOpenChange(false);
   };
 
