@@ -43,7 +43,7 @@ export const Inventory = () => {
 
   return (
     <div className="absolute top-4 left-4 flex flex-col gap-3">
-      <div className="text-black font-bold text-sm">Инвентарь</div>
+      <div className="text-white font-bold text-2xl">Инвентарь</div>
       <div className="flex flex-wrap gap-2">
         {INVENTORY_CONFIG.map((item) => (
           <InventorySlot

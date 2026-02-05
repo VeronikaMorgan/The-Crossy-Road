@@ -1,6 +1,10 @@
 @import "tailwindcss";
 
 
+:root {
+  font-family: "Science Gothic", sans-serif;
+}
+
 @theme {
   --color-yellow: #ffb703;
   --color-green: #72b01d;

@@ -21,8 +21,8 @@ export const SlotContent = ({
         <span className="min-w-[20px] text-center tabular-nums">{count}</span>
       )}
       {effectExpiresAt !== undefined && (
-        <span className="text-xs font-semibold opacity-90">
-          {getEffectTimeLeft(effectExpiresAt)}с
+        <span className="text-s font-semibold">
+          {getEffectTimeLeft(effectExpiresAt)}
         </span>
       )}
     </>

@@ -25,7 +25,7 @@ interface InventoryStore {
 }
 
 export const useInventoryStore = create<InventoryStore>((set, get) => ({
-  items: ["lightning"],
+  items: ["shield", "clock", "lightning"],
   activeEffects: [],
   collectedKeys: [],
 
@@ -106,5 +106,5 @@ export const useInventoryStore = create<InventoryStore>((set, get) => ({
     );
   },
 
-  reset: () => set({ items: ["lightning"], activeEffects: [], collectedKeys: [] }),
+  reset: () => set({ items: ["shield", "clock", "lightning"], activeEffects: [], collectedKeys: [] }),
 }));

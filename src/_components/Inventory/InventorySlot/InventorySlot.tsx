@@ -5,7 +5,7 @@ import { ActiveEffectBorder } from "./_components/ActiveEffectBorder";
 import { SlotContent } from "./_components/SlotContent";
 
 const EFFECT_BUTTON_CLASS =
-  "!border-0 !rounded-[6px] !shadow-none !text-emerald-900 disabled:!shadow-none";
+  "!border-0 !rounded-[6px] !shadow-none disabled:!shadow-none";
 
 export type InventorySlotConfig = {
   icon: React.ComponentType<{ className?: string; size?: number }>;
@@ -33,8 +33,7 @@ export const InventorySlot = ({
     <Button
       onClick={() => onUse(config.type)}
       disabled={isDisabled}
-      className={
-        effect ? twMerge("rounded-[6px]", EFFECT_BUTTON_CLASS) : undefined
+      className={twMerge('min-w-[96px] h-[48px]', effect ? EFFECT_BUTTON_CLASS : undefined)
       }
       title={config.label}
     >
