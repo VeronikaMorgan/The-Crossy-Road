@@ -8,8 +8,15 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/ui/Dialogue";
+import { Button } from "@/ui/Button";
 
-export const ResultModal = ({ open, onOpenChange }: { open: boolean; onOpenChange: (open: boolean) => void }) => {
+export const ResultModal = ({
+  open,
+  onOpenChange,
+}: {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}) => {
   const { score, reset: resetGame } = useGameStore();
   const resetInventory = useInventoryStore((state) => state.reset);
   const resetMap = useMapStore((state) => state.reset);
@@ -28,19 +35,19 @@ export const ResultModal = ({ open, onOpenChange }: { open: boolean; onOpenChang
       <DialogContent
         onInteractOutside={(e) => e.preventDefault()}
         onEscapeKeyDown={(e) => e.preventDefault()}
+        className="max-w-lg"
       >
         <DialogHeader>
-          <DialogTitle>Result</DialogTitle>
+          <DialogTitle className="text-2xl font-bold mb-3">
+            Результат: {score}
+          </DialogTitle>
         </DialogHeader>
-        <div className="space-y-4">
-          <p className="text-gray-700 dark:text-gray-300">Your score is {score}</p>
-          <button
-            onClick={handleRestart}
-            className="cursor-pointer w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors"
-          >
-            Restart
-          </button>
-        </div>
+        <Button
+          onClick={handleRestart}
+          className="w-full mt-6 bg-green hover:bg-yellow text-white font-semibold rounded-md transition-colors outline-none focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0"
+        >
+          Играть снова
+        </Button>
       </DialogContent>
     </Dialog>
   );
